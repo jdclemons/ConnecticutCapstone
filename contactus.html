@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>State of Connecticut Health Coverage Retrieval Tool</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    
+      <link href="stylesheet.css" rel="stylesheet"/>
+    <link href="reset.css" rel="reset"/>
+    
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            
+            <h1>Welcome to the State of Connecticut Health Coverage Retrieval Portal</h1>
+        </div>
+        
+         <div class="topnav">
+  <a href="index.html">Home</a>
+  <a href="patientinformation.html">Patient Information</a>
+  <a class="active" href="contactus.html">Contact</a>
+  <a href="help.html">Help</a>
+</div>
+    
+     <div id="contact">
+            <h3>Contact Your Physician</h3>
+            <button><a href="doctor@hospital.domain.com">E-mail</a></button>
+            <p>Contact your Physician's office using the link above</p>
+        </div>
+        
+        <div id="benefit">
+                <h3>Benefits Provider Information</h3>
+                <p>Information regarding patient benefits and other related data.</p>
+                <br>
+                <div data-role="main" class="ui-content">
+                    <a href="#requestChange" data-rel="popup" class="ui-btn ui-btn-inline ui-corner-all ui-icon-check ui-btn-icon-left">Request Change</a>
+
+                    <div data-role="popup" id="requestChange" class="ui-content" style="min-width:500px;">
+                        <form method="post" action="/requestchange.php">
+                            <div>
+                                <h3>Request Change</h3>
+                                <label for="name" class="ui-hidden-accessible">Name:</label>
+                                <input type="text" name="name" id="name" placeholder="Name">
+                                <label for="email" class="ui-hidden-accessible">Email:</label>
+                                <input type="text" name="email" id="email" placeholder="Email">
+                                <label for="message" class="ui-hidden-accessible">Message:</label>
+                                <input type="text" name="message" id="message" 	placeholder="Message" style="min-width:500px;" style="height:400px;">
+                                <input type="submit" data-inline="true" value="Submit">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div data-role="footer">
+            
+                </div>
+    
+    </div>
+
+
+</body>
+</html>
