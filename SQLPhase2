@@ -1,0 +1,149 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-------------------------------------------------------
+-- Schema HealthcareRetrieval
+-------------------------------------------------------
+
+-------------------------------------------------------
+-- Schema HealthcareRetrieval
+-------------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `HealthcareRetrieval` ;
+USE `HealthcareRetrieval` ;
+
+-- -----------------------------------------------------
+-- Table `HealthcareRetrieval`.`BenefitsProvider`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `HealthcareRetrieval`.`BenefitsProvider` (
+  `providerID` INT NOT NULL AUTO_INCREMENT,
+  `providerName` VARCHAR(45) NOT NULL,
+  `providerAddress` VARCHAR(45) NOT NULL,
+  `providerCounty` VARCHAR(45) NOT NULL,
+  `providerState` VARCHAR(45) NOT NULL,
+  `providerZIP` INT NOT NULL,
+  `providerPhone` INT NOT NULL,
+  PRIMARY KEY (`providerID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `HealthcareRetrieval`.`Policy`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `HealthcareRetrieval`.`Policy` (
+  `policyID` INT NOT NULL,
+  `policyType` VARCHAR(45) NOT NULL,
+  `BenefitsProvider_providerID` INT NOT NULL,
+  PRIMARY KEY (`policyID`),
+  INDEX `fk_Policy_BenefitsProvider1_idx` (`BenefitsProvider_providerID` ASC),
+  CONSTRAINT `fk_Policy_BenefitsProvider1`
+    FOREIGN KEY (`BenefitsProvider_providerID`)
+    REFERENCES `HealthcareRetrieval`.`BenefitsProvider` (`providerID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `HealthcareRetrieval`.`Candidate`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `HealthcareRetrieval`.`Candidate` (
+  `candidateID` INT NOT NULL AUTO_INCREMENT,
+  `candidateFirstName` VARCHAR(45) NOT NULL,
+  `candidateLastName` VARCHAR(45) NOT NULL,
+  `candidateAddress` VARCHAR(45) NOT NULL,
+  `candidateCounty` VARCHAR(45) NOT NULL,
+  `candidateState` VARCHAR(45) NOT NULL,
+  `candidateZIP` VARCHAR(45) NOT NULL,
+  `Policy_policyID` INT NULL,
+  `BenefitsProvider_providerID` INT NULL,
+  PRIMARY KEY (`candidateID`),
+  INDEX `fk_Candidate_Policy1_idx` (`Policy_policyID` ASC),
+  INDEX `fk_Candidate_BenefitsProvider1_idx` (`BenefitsProvider_providerID` ASC),
+  CONSTRAINT `fk_Candidate_Policy1`
+    FOREIGN KEY (`Policy_policyID`)
+    REFERENCES `HealthcareRetrieval`.`Policy` (`policyID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Candidate_BenefitsProvider1`
+    FOREIGN KEY (`BenefitsProvider_providerID`)
+    REFERENCES `HealthcareRetrieval`.`BenefitsProvider` (`providerID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `HealthcareRetrieval`.`Doctor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `HealthcareRetrieval`.`Doctor` (
+  `doctorID` INT NOT NULL,
+  `doctorFirstName` VARCHAR(45) NOT NULL,
+  `doctorLastName` VARCHAR(45) NOT NULL,
+  `doctorSpecialty` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`doctorID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `HealthcareRetrieval`.`MedicalRecords`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `HealthcareRetrieval`.`MedicalRecords` (
+  `medicalCodeID` INT NOT NULL AUTO_INCREMENT,
+  `medicalCodeDate` DATETIME NOT NULL,
+  `MedicalCodeComments` VARCHAR(1000) NOT NULL,
+  `Candidate_candidateID` INT NOT NULL,
+  `Doctor_doctorID` INT NOT NULL,
+  PRIMARY KEY (`medicalCodeID`),
+  INDEX `fk_MedicalRecords_Candidate1_idx` (`Candidate_candidateID` ASC),
+  INDEX `fk_MedicalRecords_Doctor1_idx` (`Doctor_doctorID` ASC),
+  CONSTRAINT `fk_MedicalRecords_Candidate1`
+    FOREIGN KEY (`Candidate_candidateID`)
+    REFERENCES `HealthcareRetrieval`.`Candidate` (`candidateID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_MedicalRecords_Doctor1`
+    FOREIGN KEY (`Doctor_doctorID`)
+    REFERENCES `HealthcareRetrieval`.`Doctor` (`doctorID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `HealthcareRetrieval`.`MedicalOffice`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `HealthcareRetrieval`.`MedicalOffice` (
+  `medOfficeID` INT NOT NULL,
+  `MedicalOfficecol` VARCHAR(45) NULL,
+  PRIMARY KEY (`medOfficeID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `HealthcareRetrieval`.`Doctor_has_MedicalOffice`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `HealthcareRetrieval`.`Doctor_has_MedicalOffice` (
+  `Doctor_doctorID` INT NOT NULL,
+  `MedicalOffice_medOfficeID` INT NOT NULL,
+  PRIMARY KEY (`Doctor_doctorID`, `MedicalOffice_medOfficeID`),
+  INDEX `fk_Doctor_has_MedicalOffice_MedicalOffice1_idx` (`MedicalOffice_medOfficeID` ASC),
+  INDEX `fk_Doctor_has_MedicalOffice_Doctor1_idx` (`Doctor_doctorID` ASC),
+  CONSTRAINT `fk_Doctor_has_MedicalOffice_Doctor1`
+    FOREIGN KEY (`Doctor_doctorID`)
+    REFERENCES `HealthcareRetrieval`.`Doctor` (`doctorID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Doctor_has_MedicalOffice_MedicalOffice1`
+    FOREIGN KEY (`MedicalOffice_medOfficeID`)
+    REFERENCES `HealthcareRetrieval`.`MedicalOffice` (`medOfficeID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE USER 'user1';
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
